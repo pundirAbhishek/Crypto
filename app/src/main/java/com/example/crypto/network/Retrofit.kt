@@ -1,9 +1,11 @@
-package com.example.crypto.data.api
+package com.example.crypto.network
 
-import com.example.crypto.network.CommonHeadersAppenderInterceptor
-import com.example.crypto.network.UrlConfig
+import android.content.Context
+import com.example.crypto.data.api.CryptoApi
+import com.example.crypto.data.api.CryptoApiMapper
+import com.example.crypto.data.repository.CryptoRepository
+import com.example.crypto.data.repository.CryptoRepositoryImpl
 import okhttp3.OkHttpClient
-import okhttp3.Protocol
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -12,9 +14,7 @@ object Retrofit {
 
     private const val timeOut = 20L
 
-    private val commonHeadersAppenderInterceptor: CommonHeadersAppenderInterceptor by lazy(
-        LazyThreadSafetyMode.NONE
-    ) {
+    private val commonHeadersAppenderInterceptor: CommonHeadersAppenderInterceptor by lazy {
         CommonHeadersAppenderInterceptor()
     }
 
@@ -34,6 +34,13 @@ object Retrofit {
             .baseUrl(UrlConfig.cryptoBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    fun createRepository(context: Context): CryptoRepository {
+        return CryptoRepositoryImpl(
+            cryptoApi = retrofit.create(CryptoApi::class.java),
+            cryptoApiMapper = CryptoApiMapper()
+        )
     }
 
 }

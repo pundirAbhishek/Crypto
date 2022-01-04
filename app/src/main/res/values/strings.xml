@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Crypto</string>
+    <string name="title_activity_crypto_home">CryptoHomeActivity</string>
 </resources>
