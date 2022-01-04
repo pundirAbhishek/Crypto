@@ -10,15 +10,14 @@ android {
         applicationId "com.example.crypto"
         minSdk 21
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        versionCode Integer.parseInt(APP_VERSION_CODE)
+        versionName APP_VERSION_NAME
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -61,8 +60,8 @@ dependencies {
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
-    // GSON
-    implementation 'com.google.code.gson:gson:2.8.9'
+    // GSON Convertor
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
 
 
