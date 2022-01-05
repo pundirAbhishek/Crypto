@@ -10,12 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
+import com.example.crypto.home.ui.components.CryptoCard
 import com.example.crypto.home.ui.theme.CryptoTheme
 
 class CryptoHomeActivity : ComponentActivity() {
 
     private lateinit var viewModel: CryptoHomeViewModel
-    private lateinit var viewModelFactory: CryptoHomeViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +27,8 @@ class CryptoHomeActivity : ComponentActivity() {
 
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting2("Android")
+//                    Greeting2("Android")
+                    CryptoCard()
                 }
             }
         }

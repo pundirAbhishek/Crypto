@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.crypto.home.ui.components.CryptoCard
 import com.example.crypto.ui.theme.CryptoTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
             CryptoTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    CryptoCard()
                 }
             }
         }
@@ -34,9 +35,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String) {
     Column(
-        modifier = Modifier.fillMaxSize()
-            .padding(16.dp)
+        modifier = Modifier
+            .fillMaxSize()
             .background(Color.Green)
+            .padding(16.dp)
+
     ){
         Text(text = "Hello $name!")
         Text(text = "Number of coffees: 0")
