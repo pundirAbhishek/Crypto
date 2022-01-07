@@ -18,6 +18,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import kotlin.math.min
@@ -40,10 +41,12 @@ fun LineChart(
         androidx.compose.material.MaterialTheme.colors.primary,
         androidx.compose.material.MaterialTheme.colors.primary
     ),
+    lineColor : Color = Color.White,
     lineWidth: Float = 4f,
     yAxisValues: List<Float>,
     shouldAnimate: Boolean = true,
     shouldDrawLiveDot: Boolean = false,
+    shouldDrawMiddleLine : Boolean = true,
     animationKey: Any? = Unit,
     customXTarget: Int = 0,
 ) {
@@ -77,8 +80,6 @@ fun LineChart(
         )
     )
 
-
-
     Canvas(modifier = modifier.padding(8.dp)) {
         val path = Path()
         val xBounds = Pair(0f, xTarget)
@@ -98,11 +99,28 @@ fun LineChart(
             path.lineTo(xPoint, yPoint)
         }
 
+        val pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f)
+        val yMin = size.height - (yBounds.first * scaleY) + yMove
+        val yMax = size.height - (yBounds.second * scaleY) + yMove
+        val yCoordinate = yMax.plus(yMin).div(2)
+
         drawPath(
             path = path,
             brush = Brush.linearGradient(lineColors),
             style = Stroke(width = lineWidth)
         )
+
+        if(shouldDrawMiddleLine){
+            drawLine(
+                color = lineColor,
+                start = Offset(0f, yCoordinate),
+                end = Offset(size.width, yCoordinate),
+                pathEffect = pathEffect,
+                strokeWidth = lineWidth/2,
+                alpha = 0.5f
+            )
+        }
+
         if (shouldDrawLiveDot) {
             drawCircle(
                 lineColors.first(), radius, Offset(

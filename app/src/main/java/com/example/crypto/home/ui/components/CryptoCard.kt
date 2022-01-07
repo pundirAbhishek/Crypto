@@ -33,8 +33,9 @@ import com.example.crypto.utils.LineChart
 fun CryptoCard(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .width(220.dp)
+            .padding(horizontal = 10.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .width(200.dp)
 
 
     ) {
