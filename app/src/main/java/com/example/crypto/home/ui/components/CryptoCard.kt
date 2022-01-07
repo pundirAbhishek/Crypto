@@ -32,15 +32,16 @@ fun CryptoCard(modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(16.dp))
             .width(240.dp)
     ) {
-        Column() {
+        Column(
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)
+        ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp)
             ) {
-                Text(text = "Ethereum", modifier = Modifier.padding(start = 16.dp))
-                Text(text = "Eth", modifier = Modifier.padding(end = 16.dp))
+                Text(text = "Ethereum")
+                Text(text = "Eth")
             }
 
             val data = chartData.map {
@@ -50,22 +51,28 @@ fun CryptoCard(modifier: Modifier = Modifier) {
             LineChart(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp),
+                    .height(150.dp),
                 yAxisValues = data,
                 lineColors = gradientGreenColors
             )
 
-        }
-//
-//        LineChart(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(100.dp),
-//            yAxisValues = crypto.chartData,
-//            lineColors = if (crypto.dailyChange > 0)
-//                gradientGreenColors else gradientRedColors
-//        )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth(1f)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.eth),
+                    contentDescription = "Crypto Logo"
+                )
 
+                Column {
+                    Text(text = "Profit")
+                    Text(text = "2.6%")
+                    Text(text = "$14.580,00")
+                }
+            }
+
+        }
     }
 }
 
