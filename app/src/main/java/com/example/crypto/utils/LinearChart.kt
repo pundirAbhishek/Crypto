@@ -8,11 +8,9 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -20,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import kotlin.math.min
 
@@ -41,12 +40,12 @@ fun LineChart(
         androidx.compose.material.MaterialTheme.colors.primary,
         androidx.compose.material.MaterialTheme.colors.primary
     ),
-    lineColor : Color = Color.White,
+    lineColor: Color = Color.White,
     lineWidth: Float = 4f,
     yAxisValues: List<Float>,
     shouldAnimate: Boolean = true,
     shouldDrawLiveDot: Boolean = false,
-    shouldDrawMiddleLine : Boolean = true,
+    shouldDrawMiddleLine: Boolean = true,
     animationKey: Any? = Unit,
     customXTarget: Int = 0,
 ) {
@@ -80,7 +79,26 @@ fun LineChart(
         )
     )
 
-    Canvas(modifier = modifier.padding(8.dp)) {
+    var reDrawCircle by remember {
+        mutableStateOf(false)
+    }
+
+    var clickEvent by remember {
+        mutableStateOf(0f)
+    }
+
+    Canvas(modifier = modifier
+        .padding(8.dp)
+        .pointerInput(Unit) {
+            detectTapGestures(
+                onTap = { tapOffset ->
+                    reDrawCircle = true
+                    clickEvent = tapOffset.x
+                }
+            )
+
+        }) {
+
         val path = Path()
         val xBounds = Pair(0f, xTarget)
         val yBounds = getBounds(yValues)
@@ -110,13 +128,37 @@ fun LineChart(
             style = Stroke(width = lineWidth)
         )
 
-        if(shouldDrawMiddleLine){
+        if(reDrawCircle){
+
+            val xClickValue = clickEvent.div(scaleX).toInt().times(scaleX)
+            val yClickValue = clickEvent/scaleX
+
+            drawCircle(
+                lineColors.first(), radius, Offset(
+                    xClickValue, size.height - (yValues[yClickValue.toInt()] *
+                            scaleY)
+                            + yMove
+                ), opacity
+            )
+
+            drawLine(
+                color = lineColor,
+                start = Offset(xClickValue, 0f),
+                end = Offset(xClickValue, size.height),
+                pathEffect = pathEffect,
+                strokeWidth = lineWidth / 2,
+                alpha = 0.5f
+            )
+
+        }
+
+        if (shouldDrawMiddleLine) {
             drawLine(
                 color = lineColor,
                 start = Offset(0f, yCoordinate),
                 end = Offset(size.width, yCoordinate),
                 pathEffect = pathEffect,
-                strokeWidth = lineWidth/2,
+                strokeWidth = lineWidth / 2,
                 alpha = 0.5f
             )
         }
