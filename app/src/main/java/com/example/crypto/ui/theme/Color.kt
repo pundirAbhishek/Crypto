@@ -14,6 +14,8 @@ val red = Color(0xFFEE1D52)
 val blue = Color(0xFF5851DB)
 val orange = Color(0xFFF56040)
 val purple = Color(0xFF833AB4)
+val cardSecondColor = Color(0xFFFB7736)
+val cardFirstColor = Color(0xFFe54495)
 
 
 val gradientGreenColors = listOf(green200, green500, green700)

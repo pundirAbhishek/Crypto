@@ -1,25 +1,19 @@
 package com.example.crypto.utils
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
+import android.graphics.Typeface
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import java.math.RoundingMode
 import kotlin.math.min
 
 
@@ -46,6 +40,7 @@ fun LineChart(
     shouldAnimate: Boolean = true,
     shouldDrawLiveDot: Boolean = false,
     shouldDrawMiddleLine: Boolean = true,
+    shouldGiveValueOnTouch: Boolean = false,
     animationKey: Any? = Unit,
     customXTarget: Int = 0,
 ) {
@@ -83,17 +78,22 @@ fun LineChart(
         mutableStateOf(false)
     }
 
-    var clickEvent by remember {
+    var xClickValue by remember {
         mutableStateOf(0f)
     }
+
+
+    // TODO : Add Draw Gestures
 
     Canvas(modifier = modifier
         .padding(8.dp)
         .pointerInput(Unit) {
             detectTapGestures(
                 onTap = { tapOffset ->
-                    reDrawCircle = true
-                    clickEvent = tapOffset.x
+                    if (shouldGiveValueOnTouch) {
+                        reDrawCircle = true
+                        xClickValue = tapOffset.x
+                    }
                 }
             )
 
@@ -128,14 +128,14 @@ fun LineChart(
             style = Stroke(width = lineWidth)
         )
 
-        if(reDrawCircle){
+        if (reDrawCircle) {
 
-            val xClickValue = clickEvent.div(scaleX).toInt().times(scaleX)
-            val yClickValue = clickEvent/scaleX
+            val xClickVal = xClickValue.div(scaleX).toInt().times(scaleX)
+            val yClickVal = xClickValue / scaleX
 
             drawCircle(
                 lineColors.first(), radius, Offset(
-                    xClickValue, size.height - (yValues[yClickValue.toInt()] *
+                    xClickVal, size.height - (yValues[yClickVal.toInt()] *
                             scaleY)
                             + yMove
                 ), opacity
@@ -149,6 +149,36 @@ fun LineChart(
                 strokeWidth = lineWidth / 2,
                 alpha = 0.5f
             )
+
+            // Draw Text
+            val paint = Paint().asFrameworkPaint()
+            paint.apply {
+                isAntiAlias = true
+                textSize = 28f
+                typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                style = android.graphics.Paint.Style.FILL
+            }
+
+            drawIntoCanvas {
+                val textPath = android.graphics.Path()
+                textPath.addRect(
+                    xClickVal,
+                    100f,
+                    xClickVal + 200f,
+                    150f,
+                    android.graphics.Path.Direction.CW
+                )
+
+                it.nativeCanvas.drawTextOnPath(
+                    yValues[yClickVal.toInt()].toBigDecimal().setScale(2, RoundingMode.UP)
+                        .toString(),
+                    textPath,
+                    0f,
+                    0f,
+                    paint
+                )
+
+            }
 
         }
 

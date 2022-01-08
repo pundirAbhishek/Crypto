@@ -20,10 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.crypto.R
 import com.example.crypto.data.model.Crypto
-import com.example.crypto.ui.theme.gradientGreenColors
-import com.example.crypto.ui.theme.gradientRedColors
-import com.example.crypto.ui.theme.green200
-import com.example.crypto.ui.theme.red
+import com.example.crypto.ui.theme.*
 import com.example.crypto.utils.LineChart
 
 
@@ -45,8 +42,8 @@ fun CryptoCard(modifier: Modifier = Modifier) {
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            red,
-                            green200
+                            cardFirstColor,
+                            cardSecondColor
                         )
                     )
                 )
